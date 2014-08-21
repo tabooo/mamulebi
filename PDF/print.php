@@ -129,6 +129,7 @@ $pdf->AddPage();
 
 $pdf->Image('../images/logo.jpg',25,6,30);
 //$pdf->setLineWidth(1);
+
 $pdf->Line(1, 13, 80, 13);
 $pdf->Ln(4);
 $pdf->Write(4,$date);
@@ -176,6 +177,10 @@ $pdf->Ln(6);
 $pdf->Line(1, $pdf->GetY(), 80, $pdf->GetY());
 $pdf->SetFont('DejaVu','',16);
 $pdf->Write(7,"სულ: ".number_format($sul,2, '.', ' ')." ლარი");
+$pdf->Ln(6);
+if($_REQUEST['check']=="1"){
+	$pdf->Write(7,"წინასწარი ჩეკი");
+	}
 
 $printer=$mgseqcia["printer"];
 //$pdf->Output();
@@ -183,23 +188,25 @@ $pdf->Output("files/".$file, 'F');
 //exec("java -classpath pdfboxapp181.jar org.apache.pdfbox.PrintPDF -silentPrint -printerName $printer $file");
 //exec("java -classpath pdfboxapp181.jar org.apache.pdfbox.PrintPDF -silentPrint -printerName $printer $file");
 execInBg($printer,"files/".$file);
-execInBg($printer,"files/".$file);
+
+if($_REQUEST['check']!="1"){
+	execInBg($printer,"files/".$file);
 //delFile($file);
-unlink($file);
+	unlink($file);
 
-mysql_query("insert into magidisdaxurva values (null,'$uprocentot','$procentit','$sul','$dro','$magida','".$_SESSION['seqcia']."','$adgili','$procenti','$fasdaklebisprocenti','$shemadgenloba','".$_SESSION['userid']."','0')");
-$lastid=mysql_insert_id();
-$rr=mysql_num_rows(mysql_query("select * from sell_temp where magida='$magida'"));
-$i=0;
-while($i!=$rr){
-$as=mysql_fetch_array(mysql_query("select id from sell_temp where magida='$magida' order by id limit 0,1"));
-mysql_query("insert into sell (prod_id,raodenoba,ertfasi,fasi,saxeli,cat,dro,year,month,day,hour,min,sec,magida,seqcia,adgili,print,user) select prod_id,raodenoba,ertfasi,fasi,saxeli,cat,dro,year,month,day,hour,min,sec,magida,seqcia,adgili,print,user from sell_temp where id='".$as['id']."'") or die(mysql_error());
-$lastins=mysql_insert_id();
-mysql_query("update magidisdaxurva set shemadgenloba=CONCAT(shemadgenloba,',".$lastins."') where id='".$lastid."'");
-mysql_query("delete from sell_temp where magida='$magida' and id='".$as['id']."'");
-$i++;
+	mysql_query("insert into magidisdaxurva values (null,'$uprocentot','$procentit','$sul','$dro','$magida','".$_SESSION['seqcia']."','$adgili','$procenti','$fasdaklebisprocenti','$shemadgenloba','".$_SESSION['userid']."','0')");
+	$lastid=mysql_insert_id();
+	$rr=mysql_num_rows(mysql_query("select * from sell_temp where magida='$magida'"));
+	$i=0;
+	while($i!=$rr){
+	$as=mysql_fetch_array(mysql_query("select id from sell_temp where magida='$magida' order by id limit 0,1"));
+	mysql_query("insert into sell (prod_id,raodenoba,ertfasi,fasi,saxeli,cat,dro,year,month,day,hour,min,sec,magida,seqcia,adgili,print,user) select prod_id,raodenoba,ertfasi,fasi,saxeli,cat,dro,year,month,day,hour,min,sec,magida,seqcia,adgili,print,user from sell_temp where id='".$as['id']."'") or die(mysql_error());
+	$lastins=mysql_insert_id();
+	mysql_query("update magidisdaxurva set shemadgenloba=CONCAT(shemadgenloba,',".$lastins."') where id='".$lastid."'");
+	mysql_query("delete from sell_temp where magida='$magida' and id='".$as['id']."'");
+	$i++;
+	}
 }
-
 die("DONE");
 } else {
 	die("გთხოვთ გაიაროთ ავტორიზაცია ახლიდან!");
@@ -232,8 +239,9 @@ $pdf->SetLeftMargin(5);
 //$pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage();
+$time=date("h:i:s", time());
 
-$pdf->Write(5,"ყუდადღება!!! ".$qmedeba);
+$pdf->Write(5,"ყუდადღება!!! ".$qmedeba."  ".$time);
 $pdf->Ln(4);
 $pdf->Cell(25 ,10,"მაგ.");
 $pdf->Cell(32 ,10,"დასახელება");

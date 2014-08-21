@@ -161,15 +161,34 @@ $selected="";
 <input type="text" name="product_shemadgenloba" size="90" id="product_shemadgenloba" value="<?php echo $prod['shemadgenloba']; ?>"/><br>
 
 <?php
+$tvitgirebuleba=0;
+
 $shemadgenn="";
 $shemadg=explode(",", $prod['shemadgenloba']);
 $i=1;
 while($shemadg[$i]!=""){
+
 $shemadgenloba=explode(":", $shemadg[$i]);
 $shemraodenoba=$shemadgenloba[1];
 $shemid=$shemadgenloba[0];
+
 $shemsaxeli1=mysql_query("select saxeli from productebi where id='$shemid'");
 $shemsaxeli=mysql_fetch_array($shemsaxeli1) ;
+
+$ingredienti=mysql_query("select * from migebebi where id='$shemid'");
+$fasi=0;
+$cona=0;
+while($ingred=mysql_fetch_array($ingredienti)){
+	$fasi=$fasi+$ingred['jami'];
+	$cona=$cona+$ingred['raodenoba'];
+}
+if($cona!=0){
+$sashfasi=$shemraodenoba*$fasi/$cona;
+$tvitgirebuleba=$tvitgirebuleba+$sashfasi;
+} else{
+	echo "<b>".$shemsaxeli['saxeli']."</b> არ არის შეტანილი მიღებებში<br>";
+}
+
 echo "<input type='text' value='".$shemsaxeli['saxeli']."' id='shemsaxeli".$i."' name='shemsaxeli' disabled><input type='text' value='".$shemraodenoba."' id='prodraodenoba".$i."' name='prodraodenoba".$i."'><input type='hidden' value='".$shemid."' id='prod".$i."' name='prod".$i."'><input type='button' value='შეცვლა' onClick='changeshem()'><input type='button' value='X წაშლა' onClick='deleteshem(\"".$i."\")'><br>";
 $shemadgenn.=$shemsaxeli['saxeli']."(".$shemid."):".$shemraodenoba.", ";
 $i++;
@@ -178,6 +197,12 @@ $i++;
 <!--<textarea cols="42" rows="5" disabled="disabled" name="product_shemadgenloba_sityvieri" id="product_shemadgenloba_sityvieri"><?php echo $shemadgenn; ?></textarea>-->
 <br><input type="hidden" value="0" id="theValue" /><input type="button" onclick="addElement()" name="add" value="ინგრედიენტის დამატება" /><div id="shemadgenloba"></div></td>
 </tr>
+
+<tr>
+<td valign="top">თვითღირებულება</td>
+<td><?php echo $tvitgirebuleba; ?></td>
+</tr>
+
 <tr>
 <td>გამოჩენა</td><td>
 <select type="text" name="visible" id="visible">

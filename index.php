@@ -305,6 +305,23 @@ function print_window(adgili,magida) {
 	
 }
 
+function print_check(magida){
+	procenti=document.getElementById("procentisul").value;
+	fasdaklebisprocenti=document.getElementById("fasdaklebisprocenti").value;
+	fasdaklebiskodi=document.getElementById("fasdaklebiskodi").value;
+	//suljami=document.getElementById("suljami").value;
+	check="1";
+	$(function() {	
+		$.post('PDF/print.php',{dos:"afterwholeprint",magida:magida,procenti:procenti,fasdaklebisprocenti:fasdaklebisprocenti,fasdaklebiskodi:fasdaklebiskodi, check:check}, function(data){
+				}).success(function() {
+					refreshtables(magida);						
+				});			
+				return false;		
+	});
+	
+}
+
+
 function afterprint2(magida,adgili){
 	$(function() {				
 		$.post('PDF/print.php',{dos:"afterprint",magida:magida,adgili:adgili}, function(data){

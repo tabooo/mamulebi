@@ -158,6 +158,7 @@ $adgilebi.=$prod2['adgili'].",";
 $adgilebi2=explode(",", $adgilebi);
 $ad=mysql_query("select * from adgili");
 echo "<table><tr>";
+$ads='';
 while($ads=mysql_fetch_array($ad)){
 $i=0;
 while($adgilebi2[$i]!=""){
@@ -173,7 +174,11 @@ $i++;
 <?php
 $disabled="disabled='disabled'";
 }
+?>
+<td><button class="btn" onClick="print_check('<?php echo $magida; ?>')" style="height: 60px; width: 100px"><i class="icon-print"></i> ჩეკი</button></td>
+<?php
 echo "</tr></table>";
+
 $bgcolor="success";
 $nom=1;
 $resp=mysql_query("select * from sell_temp where magida='$magida' order by id desc") or die(mysql_error());

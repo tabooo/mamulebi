@@ -17,7 +17,7 @@ echo $_SESSION['username'];
 mysqlconnect();
 			$cat="index";
 			//if(stripslashes($_GET['cat'])=="") $_GET['cat']="main";
-			if(stripslashes($_GET['cat'])!="" && file_exists("module/".stripslashes($_GET['cat']).".php")) $cat=stripslashes($_GET['cat']);
+			if(stripslashes(@$_GET['cat'])!="" && file_exists("module/".stripslashes($_GET['cat']).".php")) $cat=stripslashes($_GET['cat']);
 			
 			include("module/".$cat.".php");
 ?>
